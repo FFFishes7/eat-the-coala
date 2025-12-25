@@ -4,7 +4,7 @@
 
 ## 🎮 在线体验
 
-👉 [点击开始游戏]([https://eat-the-coala.vercel.app](https://fffishes7.github.io/eat-the-coala/))
+👉 [点击开始游戏]([https://fffishes7.github.io/eat-the-coala/])
 
 ## 🕹️ 游戏模式
 
