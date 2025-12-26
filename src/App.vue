@@ -14,6 +14,7 @@
       :mode="gameMode" 
       :usedTime="usedTime" 
       :reason="endReason" 
+      :highScore="highScores[gameMode]"
       @retry="retryGame" 
       @home="goHome" 
     />
@@ -21,7 +22,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import Home from './components/Home.vue';
 import Game from './components/Game.vue';
 import Over from './components/Over.vue';
@@ -34,6 +35,23 @@ const timeLimit = ref(15);        // 手速模式倒计时秒数
 const finalScore = ref(0);
 const endReason = ref('wrong');   // 'wrong' | 'timeout'
 const usedTime = ref(0);          // 实际消耗时间
+
+// 最高分持久化 localStorage
+const HIGH_SCORE_KEY = 'eat-the-coala-highscores';
+function loadHighScores() {
+  try {
+    const raw = localStorage.getItem(HIGH_SCORE_KEY);
+    if (raw) {
+      const obj = JSON.parse(raw);
+      return {
+        classic: obj.classic ?? 0,
+        speed: obj.speed ?? 0
+      };
+    }
+  } catch {}
+  return { classic: 0, speed: 0 };
+}
+const highScores = ref(loadHighScores());
 
 // 开始游戏
 const startGame = (mode = 'classic') => {
@@ -51,6 +69,8 @@ const handleGameOver = ({ score, reason, time }) => {
   finalScore.value = score;
   endReason.value = reason;
   usedTime.value = time;
+  updateHighScore(gameMode.value, score);
+
   gameState.value = 'over';
 };
 
@@ -58,6 +78,20 @@ const handleGameOver = ({ score, reason, time }) => {
 const goHome = () => {
   gameState.value = 'home';
 };
+
+// 更新最高分
+const updateHighScore = (mode, score) => {
+  if (score > highScores.value[mode]) {
+    highScores.value[mode] = score;
+    // 保存到 localStorage
+    localStorage.setItem(HIGH_SCORE_KEY, JSON.stringify(highScores.value));
+  }
+}
+
+// 页面加载时同步 localStorage 数据
+onMounted(() => {
+  highScores.value = loadHighScores();
+});
 </script>
 
 <style scoped>

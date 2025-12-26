@@ -6,13 +6,16 @@
     <template v-if="mode === 'classic'">
       <p class="label">得分</p>
       <p class="final-score">{{ score }}</p>
+      <p class="high-score">最高分: {{ highScore }}</p>
     </template>
     
     <!-- 手速模式：显示 CPS -->
     <template v-else>
       <p class="label">{{ displayTime }}秒内点击</p>
       <p class="final-score">{{ score }}</p>
+      <p class="high-score">最高分: {{ highScore }}</p>
       <p class="cps">CPS: {{ cps }}</p>
+
     </template>
     
     <button class="retry-btn" :disabled="isLocked" @click.stop="handleRetry" @touchstart.stop.prevent="handleRetry">Try Again</button>
@@ -47,6 +50,10 @@ const props = defineProps({
   reason: {
     type: String,
     default: 'wrong'  // 'wrong' | 'timeout'
+  },
+  highScore: {
+    type: Number,
+    default: 0
   }
 });
 
@@ -105,6 +112,14 @@ const cps = computed(() => {
   font-size: 4rem;
   margin: 0 0 10px 0;
   font-weight: bold;
+}
+
+.high-score {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #FFD700;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 .cps {
